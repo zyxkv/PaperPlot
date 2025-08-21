@@ -1,0 +1,51 @@
+name: "🚀 Feature Request"
+description: Suggest a new feature request or improvement to the project
+title: '[Feature]: '
+labels:
+  - feature
+  - enhancement
+  - triage-needed
+  
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide a well-structured and concise breakdown of context, expected outcomes, and potential of the feature you are proposing. 
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: What feature or enhancement are you proposing?
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+  description: What is your motivation for adding/enhancing this feature, ideally as a user story/use case.
+      value: |
+        <!--  Motivation for adding / enhancing this feature, optimally describing a concrete use case in the form of a user story -->
+  As a [e.g. researcher working on ICLR/NeurIPS/CVPR/ICCV paper]
+        I want to [e.g. be able to support new paper style, add new figure layout]
+        Because [e.g. this enables the efficient paper writing of CVPR].
+    validations:
+      required: true
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Potential Benefit
+      placeholder: Describe the potential benefit of implementing this feature / enhancement
+    validations:
+      required: true      
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: What is the expected outcome of the implementation work?
+      description: List the acceptance criteria for this task in a form of a list.
+      value: '- [ ]'
+    validations:
+      required: true
+  - type: textarea
+    id: additionalinfo
+    attributes:
+      label: Additional information
+      description: If you think that any additional information would be useful please provide them here.

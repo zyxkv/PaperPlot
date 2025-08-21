@@ -1,0 +1,87 @@
+#############################
+# IEEE Publication Style
+#############################
+
+# Base fonts (English + Chinese)
+# Keep explicit family list to satisfy tests; also set serif fallbacks.
+font.family: Times New Roman, SimSun
+font.serif: Times New Roman, SimSun, DejaVu Serif
+font.sans-serif: Arial, DejaVu Sans
+font.size: 8
+font.style: normal
+
+# Math text
+mathtext.fontset: stix
+
+# Axes
+axes.labelsize: 7
+axes.titlesize: 8
+axes.linewidth: 0.5
+axes.grid: True
+axes.grid.which: both
+axes.grid.axis: both
+grid.linestyle: --
+grid.linewidth: 0.5
+grid.alpha: 0.5
+axes.labelpad: 0
+axes.titlepad: 3
+axes.xmargin: 0.0
+axes.ymargin: 0.0
+axes.zmargin: 0.0
+
+# Ticks
+xtick.labelsize: 7
+ytick.labelsize: 7
+xtick.direction: in
+ytick.direction: in
+xtick.major.size: 3
+ytick.major.size: 3
+xtick.minor.size: 1.5
+ytick.minor.size: 1.5
+xtick.minor.visible: True
+ytick.minor.visible: True
+
+# Lines and markers
+lines.linewidth: 1
+lines.markersize: 2
+
+# Legend
+legend.fontsize: 7
+legend.frameon: True
+legend.framealpha: 1
+legend.fancybox: False
+legend.edgecolor: black
+legend.labelspacing: 0.2
+legend.borderpad: 0.3
+legend.borderaxespad: 0.4
+
+# Figure
+figure.dpi: 300
+savefig.dpi: 600
+# savefig.bbox: tight
+savefig.pad_inches: 0.01
+figure.figsize: 3.5, 2.5   # inches, typical single-column width in IEEE
+
+# Layout control (subplots & constrained layout)
+figure.autolayout: False
+figure.constrained_layout.use: False
+figure.constrained_layout.h_pad: 0.04167
+figure.constrained_layout.w_pad: 0.04167
+figure.constrained_layout.hspace: 0.02
+figure.constrained_layout.wspace: 0.02
+
+figure.subplot.left: 0
+figure.subplot.right: 1
+figure.subplot.bottom: 0
+figure.subplot.top: 1
+figure.subplot.wspace: 0.02
+figure.subplot.hspace: 0.02
+
+# Patches
+patch.linewidth: 0.5
+
+# PDF/Vector output friendliness
+pdf.fonttype: 42
+ps.fonttype: 42
+svg.fonttype: none
+

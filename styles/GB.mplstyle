@@ -1,0 +1,86 @@
+#############################
+# GB (China National Standard-like) Plot Style
+#############################
+
+# Base fonts (Chinese + English)
+font.family: SimSun, Times New Roman, serif
+font.serif: Times New Roman, SimSun, DejaVu Serif
+font.sans-serif: Microsoft YaHei, DejaVu Sans
+font.size: 8
+font.style: normal
+
+# Math text
+mathtext.fontset: stix
+
+# Axes
+axes.labelsize: 10
+axes.titlesize: 10
+axes.linewidth: 0.5
+axes.grid: True
+axes.grid.which: both
+axes.grid.axis: both
+grid.linestyle: :
+grid.linewidth: 0.5
+grid.alpha: 0.6
+axes.labelpad: 0
+axes.titlepad: 3
+axes.xmargin: 0.0
+axes.ymargin: 0.0
+axes.zmargin: 0.0
+
+# Ticks
+xtick.labelsize: 9
+ytick.labelsize: 9
+xtick.direction: in
+ytick.direction: in
+xtick.major.size: 4
+ytick.major.size: 4
+xtick.minor.size: 2
+ytick.minor.size: 2
+xtick.minor.visible: True
+ytick.minor.visible: True
+
+# Lines and markers
+lines.linewidth: 1
+lines.markersize: 2
+
+# Legend
+legend.fontsize: 9
+legend.frameon: True
+legend.framealpha: 1
+legend.fancybox: False
+legend.edgecolor: black
+legend.labelspacing: 0.2
+legend.borderpad: 0.3
+legend.borderaxespad: 0.4
+
+# Figure
+figure.dpi: 300
+savefig.dpi: 600
+# savefig.bbox: tight
+savefig.pad_inches: 0.01
+figure.figsize: 3.5, 2.5
+
+# Layout control (subplots & constrained layout)
+figure.autolayout: False
+figure.constrained_layout.use: False
+figure.constrained_layout.h_pad: 0.04167
+figure.constrained_layout.w_pad: 0.04167
+figure.constrained_layout.hspace: 0.02
+figure.constrained_layout.wspace: 0.02
+
+figure.subplot.left: 0
+figure.subplot.right: 1
+figure.subplot.bottom: 0
+figure.subplot.top: 1
+figure.subplot.wspace: 0.02
+figure.subplot.hspace: 0.02
+
+# Patches
+patch.linewidth: 0.5
+
+# PDF/Vector output friendliness
+pdf.fonttype: 42
+ps.fonttype: 42
+svg.fonttype: none
+
