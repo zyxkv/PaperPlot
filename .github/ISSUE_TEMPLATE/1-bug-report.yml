@@ -12,7 +12,7 @@ body:
     attributes:
       label: Bug Description
       placeholder: |
-        A clear and concise description of what the bug is. 
+        A clear and concise description of what the bug is.
         Try to isolate the issue to help the community to reproduce it easily and increase chances for a fast fix.
     validations:
       required: true
@@ -25,7 +25,7 @@ body:
         ```python
         # code snippet triggering the bug
         import ppplt
-        
+
         ```
   Make sure to attach any needed assets (e.g. an `.mplstyle` file)!
       value: |
@@ -55,7 +55,7 @@ body:
     attributes:
       label: Relevant log output
       placeholder: |
-        Please copy and paste any relevant console output. 
+        Please copy and paste any relevant console output.
         This will be automatically formatted into code, so no need for backticks.
       render: shell
   - type: textarea

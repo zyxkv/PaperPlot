@@ -5,12 +5,12 @@ labels:
   - feature
   - enhancement
   - triage-needed
-  
+
 body:
   - type: markdown
     attributes:
       value: |
-        Please provide a well-structured and concise breakdown of context, expected outcomes, and potential of the feature you are proposing. 
+        Please provide a well-structured and concise breakdown of context, expected outcomes, and potential of the feature you are proposing.
   - type: textarea
     id: suggestion
     attributes:
@@ -35,7 +35,7 @@ body:
       label: Potential Benefit
       placeholder: Describe the potential benefit of implementing this feature / enhancement
     validations:
-      required: true      
+      required: true
   - type: textarea
     id: acceptance-criteria
     attributes:

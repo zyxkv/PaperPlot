@@ -6,6 +6,7 @@ API:
 - get_paper_preset(name: str) -> dict
 - apply_paper_preset(name: str) -> None
 """
+
 from __future__ import annotations
 
 from typing import Dict, List

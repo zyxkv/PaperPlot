@@ -33,5 +33,6 @@ def test_apply_color_set_sets_prop_cycle():
 
 def test_get_color_set_invalid_raises():
     import pytest
+
     with pytest.raises(ValueError):
         get_color_set("NOT_EXIST")

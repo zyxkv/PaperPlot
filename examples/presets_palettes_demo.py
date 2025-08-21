@@ -13,9 +13,9 @@ apply_paper_preset("ieee-gray")
 # 2) 展示多套配色（含色盲友好与灰度安全）
 color_sets = [
     "Modern Scientific",
-    "Okabe-Ito",           # 色盲友好
-    "Brewer-Qual-Soft",    # Brewer 定性组合（较友好）
-    "Grayscale-Safe",      # 灰度安全（打印/复印友好）
+    "Okabe-Ito",  # 色盲友好
+    "Brewer-Qual-Soft",  # Brewer 定性组合（较友好）
+    "Grayscale-Safe",  # 灰度安全（打印/复印友好）
 ]
 
 x = [0, 1, 2, 3, 4]

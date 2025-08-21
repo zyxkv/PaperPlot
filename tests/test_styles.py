@@ -30,6 +30,7 @@ def test_apply_style_gb_sets_font_family():
 
 def test_apply_style_invalid_raises():
     import pytest
+
     with pytest.raises(ValueError):
         ppplt.apply_style("UNKNOWN_STYLE")
 

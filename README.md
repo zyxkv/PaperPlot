@@ -1,4 +1,4 @@
-# paper_plot
+# PaperPlot
 
 Matplotlib 样式与工具库，助力论文与科研绘图（IEEE 与中国国标 GB 风格）。
 

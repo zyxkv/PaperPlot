@@ -83,4 +83,3 @@ patch.linewidth: 0.5
 pdf.fonttype: 42
 ps.fonttype: 42
 svg.fonttype: none
-

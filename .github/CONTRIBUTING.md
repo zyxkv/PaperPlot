@@ -76,7 +76,7 @@ Thank you for your interest in contributing to PaperPlot! We welcome contributio
 ## Questions and Discussions
 
 - Use [Discussions](https://github.com/zyxkv/paper_plot/discussions) for open-ended topics.
-<!-- 
+<!--
 ### Join Us
 - Follow the project’s progress and updates on [channel/community link]. -->
 
@@ -84,5 +84,5 @@ Thank you for your interest in contributing to PaperPlot! We welcome contributio
 
 We appreciate your contributions and look forward to collaborating with you!
 
-Thank you,  
+Thank you,
 PaperPlot Maintainers

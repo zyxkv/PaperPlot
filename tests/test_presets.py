@@ -32,5 +32,6 @@ def test_okabe_ito_is_color_blind_friendly_grayscale_ok():
 
 def test_grayscale_preset_is_discriminable():
     from ppplt import apply_paper_preset
+
     apply_paper_preset("ieee-gray")
     assert is_grayscale_discriminable("Grayscale-Safe")

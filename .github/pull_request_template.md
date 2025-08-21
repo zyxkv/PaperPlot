@@ -1,8 +1,8 @@
 <!--  Thanks for sending a pull request!  Please:
 
-1. Follow our contributor guidelines: 
+1. Follow our contributor guidelines:
    https://github.com/zyxkv/paper_plot/blob/main/.github/CONTRIBUTING.md
-2. Prepare your PR according to the "Submitting Code Changes" 
+2. Prepare your PR according to the "Submitting Code Changes"
    section of https://github.com/zyxkv/paper_plot/blob/main/.github/CONTRIBUTING.md
 3. Provide a concise summary of your changes in the Title above
 4. Prefix the title according to the type of issue you are addressing. Use:
