@@ -3,7 +3,7 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "paper-plot"
+name = "ppplt"
 version = "0.1.0"
 description = "Matplotlib styles and utilities for scientific and paper-ready plots (IEEE & GB)."
 readme = "README.md"
