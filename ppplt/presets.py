@@ -1,4 +1,5 @@
-"""Style & preset utilities (expanded).
+"""
+Style & preset utilities (expanded).
 
 Includes:
 1. Low level style/font helpers (moved from __init__):

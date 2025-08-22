@@ -1,4 +1,5 @@
-"""Drawing utilities & pipeline steps.
+"""
+Drawing utilities & pipeline steps.
 
 This module exposes:
   - draw(): Simple single/multi subplot creation with optional callback

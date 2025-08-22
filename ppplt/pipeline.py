@@ -1,4 +1,5 @@
-"""Pipeline primitives used across functional API.
+"""
+Pipeline primitives used across functional API.
 
 Exposes a simple Step container with >> chaining.
 """

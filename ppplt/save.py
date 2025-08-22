@@ -1,4 +1,5 @@
-"""Save utilities for last drawn figure.
+"""
+Save utilities for last drawn figure.
 
 Includes save() and save_step for pipeline.
 """
