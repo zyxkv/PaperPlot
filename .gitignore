@@ -1,6 +1,7 @@
 .zydev/
 *.chatmode.md
 logs/
+examples/assets
 tmp/
 .DS_Store
 # Byte-compiled / optimized / DLL files

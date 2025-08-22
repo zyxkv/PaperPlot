@@ -1,129 +1,255 @@
-"""
-paper_plot (ppplt)
+"""paper_plot (ppplt)
 
-Matplotlib 样式与小工具，帮助生成符合论文规范（IEEE 与中国国标 GB）的出版级图表。
+出版级 Matplotlib 图表样式与实用工具（IEEE / GB），并提供 **函数式 + 链式 (``>>``)** 绘图体验。
 
-主要功能：
-- 注册并应用内置字体（中文：SimSun；英文：Times New Roman）
-- 一键应用内置样式："IEEE" 与 "GB"
+最小心智模型：
+    init() -> set_style()/preset -> draw() -> save()
+
+或使用链式步骤：
+    (init_step() >> style_step(preset="ieee-modern") >> draw_step(... ) >> save_step("out.png")).run()
+
+本模块只保留：
+    - 生命周期 / 全局状态 (_phase, _last_fig, _last_axes)
+    - 异常类型 & 顺序校验 (_require_phase, PaperPlotException)
+    - 初始化 / 销毁 (init, destroy)
+    - 末次图对象访问 (last_figure / last_axes)
+其余功能已拆分至: presets.py, colorset.py, draw.py, save.py, pipeline.py。
 """
 
 from __future__ import annotations
 
-from importlib import resources
+import os
+import sys
+import atexit
+import logging as _logging
+import traceback
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import Optional
+from enum import Enum, auto
+from contextlib import redirect_stdout
+
+from .logging import Logger
+from .version import __version__
+from .misc import redirect_libc_stderr, get_platform, get_src_dir, get_style_dir
+
+_initialized = False
 
 
-def _pkg_dir() -> Path:
-    # 包内目录（构建后的正式安装环境）
-    return Path(__file__).resolve().parent
+class _Phase(Enum):  # 内部有限状态机
+    UNINITIALIZED = auto()
+    INITIALIZED = auto()
+    STYLE_SET = auto()
+    DRAWN = auto()
+    SAVED = auto()
 
 
-def _repo_root_fallback() -> Optional[Path]:
-    # 可编辑安装或直接在仓库根运行时，styles/ 与 fonts/ 位于项目根目录
-    p = _pkg_dir().parent  # project root if running from source layout
-    # 兼容：当 ppplt 在项目根/ppplt 下时，p 即仓库根
-    if (p / "styles").exists() or (p / "fonts").exists():
-        return p
-    return None
+_phase: _Phase = _Phase.UNINITIALIZED
+_last_fig = None
+_last_axes = None  # could be Axes or ndarray of Axes
 
 
-def styles_dir() -> Path:
-    pkg = _pkg_dir() / "styles"
-    if pkg.exists():
-        return pkg
-    repo = _repo_root_fallback()
-    if repo and (repo / "styles").exists():
-        return repo / "styles"
-    return pkg  # 默认返回包内路径（即使不存在）
+def init(
+    debug: bool = False,
+    log_time: bool = True,
+    logging_level=None,
+    theme: str = "dark",
+    logger_verbose_time: bool = False,
+    preset: str = "ieee-modern",
+):
+    global _initialized, _phase
+    if _initialized:
+        raise_exception("PaperPlot already initialized.")
+    # Make sure evertything is properly destroyed, just in case initialization failed previously
+    destroy()
+
+    # ppplot._theme
+    global _theme
+    is_theme_valid = theme in ("dark", "light", "dumb")
+    # Set fallback theme if necessary to be able to initialize logger
+    _theme = theme if is_theme_valid else "dark"
+
+    # ppplot.logger
+    global logger
+    if logging_level is None:
+        logging_level = _logging.DEBUG if debug else _logging.INFO
+    logger = Logger(logging_level, log_time, logger_verbose_time)
+    atexit.register(destroy)
+
+    if not is_theme_valid:
+        raise_exception(f"Unsupported theme: {theme}")
+
+    # Dealing with default backend
+    global platform
+    platform = get_platform()
+
+    # verbose repr
+    global _verbose
+    _verbose = False
+
+    # Check preset
+    global _preset
+    _preset = preset
+
+    # greeting message
+    _display_greeting(logger.INFO_length)
+
+    global exit_callbacks
+    exit_callbacks = []
+
+    logger.info(f"♾️  PaperPlot Init. 🔖 version: ~~<{__version__}>~~, 🎨 style: '~~<{preset}>~~'.")
+
+    _initialized = True
+    _phase = _Phase.INITIALIZED
 
 
-def fonts_dir() -> Path:
-    pkg = _pkg_dir() / "fonts"
-    if pkg.exists():
-        return pkg
-    repo = _repo_root_fallback()
-    if repo and (repo / "fonts").exists():
-        return repo / "fonts"
-    return pkg
-
-
-def available_styles() -> List[str]:
-    d = styles_dir()
-    if not d.exists():
-        return []
-    return [p.stem for p in d.glob("*.mplstyle")]
-
-
-def register_fonts() -> None:
-    """将内置字体目录加入 Matplotlib 的字体搜索路径，并刷新字体缓存。
-
-    内置字体：
-    - SimSun (SimsunExtG.ttf)
-    - Times New Roman (times.ttf)
-    以及可选的 Nerd Font CN（MapleMono-NF-CN-Regular.ttf）
-    """
-    import matplotlib
-    from matplotlib import font_manager as fm
-
-    fdir = fonts_dir()
-    if not fdir.exists():
+def destroy():
+    global _initialized, _phase, _last_fig, _last_axes
+    if not _initialized:
         return
-    # 将目录加入 Matplotlib 字体路径并重建缓存
-    fm.fontManager.addfont(str(fdir / "SimsunExtG.ttf")) if (fdir / "SimsunExtG.ttf").exists() else None
-    fm.fontManager.addfont(str(fdir / "times.ttf")) if (fdir / "times.ttf").exists() else None
-    # 可选开发用字体
-    opt_font = fdir / "MapleMono-NF-CN-Regular.ttf"
-    if opt_font.exists():
-        fm.fontManager.addfont(str(opt_font))
+    _initialized = False
+    _phase = _Phase.UNINITIALIZED
+    _last_fig = None
+    _last_axes = None
+    # Unregister at-exit callback that is not longer relevant.
+    # This is important when `init` / `destory` is called multiple times, which is typically the case for unit tests.
+    atexit.unregister(destroy)
+    # Display any buffered error message if logger is configured
+    global logger
+    if logger:
+        logger.info("🌌 PaperPlot Exit...")
 
-    # 刷新缓存
+    # Call all exit callbacks
+    for cb in exit_callbacks:
+        cb()
+    exit_callbacks.clear()
+
+
+def _display_greeting(INFO_length):
     try:
-        fm._load_fontmanager(try_read_cache=False)  # type: ignore[attr-defined]
-    except Exception:
-        # 兼容不同 Matplotlib 版本
-        fm.fontManager.refresh_fonts()
+        terminal_size = os.get_terminal_size()[0]
+    except OSError as e:
+        terminal_size = 80
+    wave_width = int((terminal_size - INFO_length - 11) / 2)
+    if wave_width % 2 == 0:
+        wave_width -= 1
+    wave_width = max(0, min(38, wave_width))
+    bar_width = wave_width * 2 + 11
+    wave = ("  " * wave_width)[:wave_width]
+    global logger
+    logger.info(f"~<╭{'─'*(bar_width)}╮>~")
+    logger.info(f"~<│{wave}>~ ~~~~<PaperPlot>~~~~ ~<{wave}│>~")
+    logger.info(f"~<╰{'─'*(bar_width)}╯>~")
 
 
-def apply_style(name: str, *, register_font: bool = True) -> None:
-    """应用指定样式（"IEEE" 或 "GB"）。
+# ------------------------------
+# Exception/Error handling
+# ------------------------------
+class PaperPlotException(Exception):
+    def __init__(self, message):  # 保留简单结构
+        self.message = message
+        super().__init__(self.message)
 
-    参数：
-    - name: 样式名（不区分大小写），对应 styles 目录下的 .mplstyle 文件名
-    - register_font: 在应用样式前是否注册内置字体
-    """
-    import matplotlib as mpl
-    from matplotlib import pyplot as plt
 
-    if register_font:
-        register_fonts()
+def _custom_excepthook(exctype, value, tb):
+    print("".join(traceback.format_exception(exctype, value, tb)))
 
-    target = styles_dir() / f"{name.upper()}.mplstyle"
-    if not target.exists():
-        raise ValueError(f"Style '{name}' not found. Available: {available_styles()}")
+    # Logger the exception right before exit if possible
+    global logger
+    try:
+        logger.error(f"{exctype.__name__}: {value}")
+    except (AttributeError, NameError):
+        # Logger may not be configured at this point
+        pass
 
-    mpl.style.use(str(target))
+
+# Set the custom excepthook to handle EzSimException
+sys.excepthook = _custom_excepthook
+
+
+def _require_phase(*allowed: _Phase):
+    if _phase not in allowed:
+        raise PaperPlotException(
+            f"Invalid call sequence: current phase {_phase.name}, allowed: {[p.name for p in allowed]}"
+        )
+
+
+def last_figure():
+    return _last_fig
+
+
+def last_axes():
+    return _last_axes
+
+
+# ----------------  链式入口（包装 init） -----------------
+from .pipeline import Step  # noqa: E402
+
+
+def init_step(*args, allow_reinit: bool = True, **kwargs):
+    """init 的惰性/可链式包装。"""
+
+    def _maybe_init(*a, **k):
+        if _initialized and allow_reinit:
+            logger.debug("init_step skipped (already initialized)")
+            return None
+        return init(*a, **k)
+
+    return Step(_maybe_init, *args, **kwargs)
 
 
 # Re-export color set utilities
-from .colorset import list_color_sets, get_color_set, apply_color_set
-from .presets import list_paper_presets, get_paper_preset, apply_paper_preset
-from .colorset import is_grayscale_discriminable
+from .colorset import list_color_sets, get_color_set, apply_color_set, is_grayscale_discriminable  # noqa: E402
+from .presets import (
+    list_paper_presets,
+    get_paper_preset,
+    apply_paper_preset,
+    styles_dir,
+    fonts_dir,
+    available_styles,
+    register_fonts,
+    apply_style,
+    set_style,
+    style_step,
+)  # noqa: E402
+from .draw import draw, draw_step  # noqa: E402
+from .save import save, save_step  # noqa: E402
+from .misc import (
+    assert_style_set,
+    assert_style_unset,
+    assert_initialized,
+    raise_exception,
+    raise_exception_from,
+)  # noqa: E402
 
 __all__ = [
+    # core lifecycle
+    "init",
+    "destroy",
+    "PaperPlotException",
+    # style & presets
     "apply_style",
+    "set_style",
+    "list_paper_presets",
+    "get_paper_preset",
+    "apply_paper_preset",
     "available_styles",
     "register_fonts",
     "styles_dir",
     "fonts_dir",
+    # drawing & saving
+    "draw",
+    "save",
+    "last_figure",
+    "last_axes",
+    # colors
     "list_color_sets",
     "get_color_set",
     "apply_color_set",
-    # presets
-    "list_paper_presets",
-    "get_paper_preset",
-    "apply_paper_preset",
-    # utility
     "is_grayscale_discriminable",
+    # pipeline
+    "Step",
+    "init_step",
+    "style_step",
+    "draw_step",
+    "save_step",
 ]

@@ -7,7 +7,7 @@ name = "paper-plot"
 version = "0.1.0"
 description = "Matplotlib styles and utilities for scientific and paper-ready plots (IEEE & GB)."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.14"
 authors = [
 	{ name = "Your Name", email = "you@example.com" }
 ]
@@ -25,12 +25,38 @@ classifiers = [
 	"Topic :: Scientific/Engineering :: Visualization",
 ]
 dependencies = [
+	"psutil",
+	"numpy >= 1.26.4",
+	"py-cpuinfo",
 	"matplotlib>=3.5",
+	"moviepy >= 2.0.0",
+	"opencv-python",
+	# future pyrender aux for 3d visualization
+	# "pyglet>=1.5", #onscreen graphical windows
+	# "freetype-py", #font rendering
+	# "PyOpenGL>=3.1.4", # write low-level OpenGL rendering pipeline
+	# "numba", #compile low-level OpenGL rendering pipeline
+    # "pymeshlab", # Use by `Mesh.remesh`, which is involve in `PBDTetEntity.sample`
+    # "pycollada", # Optional `trimesh` dependency for loading `.dae` mesh files
+    # "pygltflib == 1.16.0", # Used for parsing `.glb` mesh files
+    # "usd-core",  # Used for parsing `.usd` mesh files
+    # "tetgen >= 0.6.4", # Use by `PBD3DEntity.sample` to tetrahedralize a mesh
+    # "PyGEL3D", # Used for some advanced mesh processing such as `skeletonization`
+    # "scikit-image", # Use by `RigidGeom.visualize_sdf` to render SDF as level 0 marching cubes
+    # "coacd", # Convex decomposition library
+    # "rtree", # Ray casting used in mesh to height field conversion
+    # # Constraint Satisfaction Solver.
+    # "z3-solver", # Used to compute contype and conaffinity bitmasks from complete list of excluded collision pairs.
+    # "OpenEXR", # Used for loading raytracing special texture images
+    # "fast_simplification>=0.1.12", # Used for mesh simplification
+    # "pysplashsurf",  # Surface reconstruction library for particle data from SPH simulations
+
 ]
 
 [project.optional-dependencies]
 dev = [
-	"pytest>=7",
+	"black",
+    "pytest",
 ]
 
 [project.urls]
@@ -51,7 +77,7 @@ type = "virtual"
 
 [tool.hatch.envs.dev]
 dependencies = [
-	"pytest>=7",
+	"pytest",
 ]
 
 [tool.pytest.ini_options]
